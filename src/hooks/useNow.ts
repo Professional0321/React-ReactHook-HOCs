@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react'
 
 export const useNow = (interval = 1000): [Date] => {
-    const [time, setTime] = useState(new Date());
-    let _timer = null;
-    const updateTime = (): void => setTime(new Date());
+  const [time, setTime] = useState(new Date())
+  const _timer = useRef(null)
 
-    useEffect(() => {
-        _timer = setInterval(updateTime, interval);
-        return (): void => clearInterval(_timer);
-    }, []);
+  const updateTime = (): void => setTime(new Date())
 
-    return [time];
-};
+  useEffect(() => {
+    _timer.current = setInterval(updateTime, interval)
+    return (): void => clearInterval(_timer.current)
+  }, [])
+
+  return [time]
+}
